@@ -1,0 +1,613 @@
+<div class="layui-card minadmin-page-header">
+    <div class="layui-breadcrumb minadmin-page-title">
+        <a class="minadmin-back-home">首页</a><span lay-separator="">/</span>
+        <a><cite>用户</cite></a>
+    </div>
+</div>
+
+<div class="minadmin-page-content">
+    <div class="minadmin-container">
+        <div class="minadmin-main">
+    
+            <div class="layui-row content-button">
+                <div class="layui-col-md3">
+                    <div class='layui-row layui-col-space5 searchbar'>
+                        <div class='layui-col-md9'>
+                            <input id='searchUserText' type='text' placeholder='搜索用户' class='layui-input'>
+                        </div>
+                        <div class='layui-col-md2'>
+                            <button id='searchUserbtn' class='layui-btn layui-btn-sm layui-btn-radius'>搜索</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-col-md8">
+                    <i class="layui-icon layui-icon-more-vertical" style="color: #ddd; margin: 10px 10px 0 0"></i>
+                    <button id="btn_add" class="layui-btn layui-btn-normal layui-btn-sm">添加</button>                    
+                    <button id="btn_gen" class="layui-btn layui-btn-disabled layui-btn-sm">生成配置</button>
+                    <button id="btn_passwd" class="layui-btn layui-btn-disabled layui-btn-sm">修改密码</button>
+					<button id="btn_email" class="layui-btn layui-btn-disabled layui-btn-sm">修改邮箱</button>
+                    <button id="btn_expire" class="layui-btn layui-btn-disabled layui-btn-sm">延期</button>
+                    <button id="btn_firewall" class="layui-btn layui-btn-disabled layui-btn-sm">防火墙策略</button>
+                    <button id="btn_active" class="layui-btn layui-btn-disabled layui-btn-warm layui-btn-sm">激活</button>
+                    <button id="btn_del" class="layui-btn layui-btn-disabled layui-btn-danger layui-btn-sm">删除</button>
+                </div>
+            </div>
+
+            <div class="layui-row content">
+                <div class="layui-col-md12">
+                    <table id="user" lay-filter="user"></table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="add_dialog" class="layui-hide layui-inline">
+    <form class="layui-form add_form">
+        <div class="layui-form-item">
+            <label class="layui-form-label">用户</label>
+            <div class="layui-input-block">
+                <input type="text" name="username" placeholder="请输入" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">密码</label>
+            <div class="layui-input-block">
+                <input type="password" name="password" placeholder="请输入" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">邮箱地址</label>
+            <div class="layui-input-block">
+                <input type="text" name="email" placeholder="请输入" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">过期日期</label>
+            <div class="layui-input-block">
+                <input id="expire_date" type="text" name="expire" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">防火墙</label>
+            <div class="layui-input-block">
+                <textarea name="firewall" placeholder="请输入" class="layui-textarea"></textarea>
+                <span> 一行一条，用","分隔</span>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div id="passwd_dialog" class="layui-hide layui-inline">
+    <form class="layui-form passwd_form">
+        <div class="layui-form-item">
+            <label class="layui-form-label">密码</label>
+            <div class="layui-input-block">
+                <input type="password" name="password" placeholder="请输入" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">确认密码</label>
+            <div class="layui-input-block">
+                <input type="password" name="repassword" placeholder="请输入" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">发送邮件</label>
+            <div class="layui-input-inline">
+                <input type="checkbox" name="sendmail" lay-skin="switch">
+            </div>
+            <div class="layui-form-mid layui-word-aux">请将SMTP邮箱设置正确。</div>
+        </div>
+    </form>
+</div>
+
+<div id="email_dialog" class="layui-hide layui-inline">
+    <form class="layui-form email_form">
+        <div class="layui-form-item">
+            <label class="layui-form-label">邮箱地址</label>
+            <div class="layui-input-block">
+                <input id="email_input" type="text" name="email" placeholder="请输入" class="layui-input">
+            </div>
+        </div>
+    </form>
+</div>
+
+<div id="expire_dialog" class="layui-hide layui-inline">
+    <form class="layui-form expire_form">
+        <div class="layui-form-item">
+            <label class="layui-form-label">过期日期</label>
+            <div class="layui-input-block">
+                <input id="expire_input" type="text" name="expire" placeholder="请输入" class="layui-input">
+            </div>
+        </div>
+    </form>
+</div>
+
+<div id="firewall_dialog" class="layui-hide layui-inline">
+    <form class="layui-form firewall-form">
+        <div class="layui-form-item">
+            <label class="layui-form-label">防火墙策略</label>
+            <div class="layui-input-block">
+                <textarea name="firewall" placeholder="请输入" class="layui-textarea"></textarea>
+                <span> 一行一条，用","分隔</span>
+            </div>
+        </div>
+    </form>
+</div>
+<script>
+layui.use(['jquery', 'element', 'table', 'layer', 'form', 'laydate'], function() {
+    var $ = layui.$;
+    var element = layui.element;
+    var table = layui.table;
+    var layer = layui.layer;
+    var form = layui.form;
+    var laydate = layui.laydate;
+
+    var selected = [];
+    var expire_time = new Date();
+    expire_time.setTime(expire_time.getTime() + 7*86400000);
+
+    var usertable = {
+        elem: '#user',
+        url: '/user', //数据接口
+        where: {"user": "all"},
+        page: true,
+        cols: [[ //表头
+        {checkbox: true},
+        {field: 'id', title: 'ID', hide: true},
+        {field: 'username', title: '用户', width: 150},
+        {field: 'email', title: '邮箱地址', width: 200},
+        {field: 'active', title: '状态', templet: function(d){return d.active == true ? "激活":"禁用"}, width: 60},
+        {field: 'expire', title: '过期日期', width: 180},
+        {field: 'firewall', title: '防火墙', templet: function(d){
+                if (d.firewall === null || d.firewall === "undefined" || d.firewall === "")
+                    return "";
+                else
+                    return "<span>"+d.firewall.replace(/,/g, "<br />")+"</span>";
+            }
+        }
+        ]],
+        parseData: function(res) { //res 即为原始返回的数据
+            return {
+                "code": res.status, //解析接口状态
+                "msg": res.message, //解析提示文本
+                "count": res.total, //解析数据长度
+                "data": res.data.item //解析数据列表
+            }
+        }
+    }; 
+
+    function btn_disabled () {
+        $("#btn_gen").addClass("layui-btn-disabled");
+        $("#btn_passwd").addClass("layui-btn-disabled");
+		$("#btn_email").addClass("layui-btn-disabled");
+        $("#btn_active").addClass("layui-btn-disabled");
+        $("#btn_expire").addClass("layui-btn-disabled");
+        $("#btn_firewall").addClass("layui-btn-disabled");
+        $("#btn_del").addClass("layui-btn-disabled");
+
+        $("#btn_gen").off("click");
+        $("#btn_passwd").off("click");
+		$("#btn_email").off("click");
+        $("#btn_active").off("click");
+        $("#btn_expire").off("click");
+        $("#btn_firewall").off("click");
+        $("#btn_del").off("click");
+    }
+
+    function btn_enabled () {
+        $("#btn_gen").removeClass("layui-btn-disabled");
+        $("#btn_passwd").removeClass("layui-btn-disabled");
+		$("#btn_email").removeClass("layui-btn-disabled");
+        $("#btn_active").removeClass("layui-btn-disabled");
+        $("#btn_expire").removeClass("layui-btn-disabled");
+        $("#btn_firewall").removeClass("layui-btn-disabled");
+        $("#btn_del").removeClass("layui-btn-disabled");
+
+        $("#btn_gen").on("click", btn_gen_click);
+        $("#btn_passwd").on("click", btn_passwd_click);
+		$("#btn_email").on("click", btn_email_click);
+        $("#btn_active").on("click", btn_active_click);
+        $("#btn_expire").on("click", btn_expire_click);
+        $("#btn_firewall").on("click", btn_firewall_click);
+        $("#btn_del").on("click", btn_del_click);
+    }
+
+    function init() {
+        selected = [];
+        btn_disabled();
+        table.render(usertable);
+    };
+
+    init();    
+
+    table.on('checkbox(user)', function(obj){
+        if ( obj.type == "all" && obj.checked == true ) {
+            selected = [];
+            selected.push(obj.data);
+            selected.push(obj.data);
+        }
+        if ( obj.type == "all" && obj.checked == false ) {
+            selected = [];
+        }
+        var data = obj.data;
+        if (obj.checked) {
+            selected.push(data);
+        } else {
+            selected.forEach(function(item, index) {
+                if (item.id == data.id) {
+                    selected.splice(index, 1);
+                }
+            })
+        }
+        if (selected.length == 1) {
+            if (selected[0].active == true) {
+                $("#btn_active").text("禁用");
+                btn_enabled();
+            } else {
+                $("#btn_active").text("激活");
+                $("#btn_active").removeClass("layui-btn-disabled");
+                $("#btn_del").removeClass("layui-btn-disabled");
+                $("#btn_active").on("click", btn_active_click);
+                $("#btn_del").on("click", btn_del_click);
+            }
+        } else if (selected.length > 1) {
+            layer.msg('不能选择多个', {time: 500, skin: 'info-class'});
+            btn_disabled();
+        } else {
+            btn_disabled();
+        }
+    });
+
+    $("#searchUserbtn").click(function() {
+        selected = [];
+        var curuser = $("#searchUserText").val();
+        if (curuser === "" || curuser === "undefined") {
+            layer.msg("请输入用户");
+        } else {
+            usertable.where = {"user": curuser};
+            table.render(usertable);
+            usertable.where = {"user": "all"};
+            $("#searchUserText").val("");
+        }
+    });
+
+    function add_user(index, layero) {
+        var add_form = layero.find(".add_form")[0];
+        var username = add_form['username'].value;
+        var password = add_form['password'].value;
+		var email = add_form['email'].value;
+        if (username === "") {
+            layer.msg("请输入用户");
+            return;
+        } else if ( /^[a-zA-Z]{1}([a-zA-Z0-9]|[._!@#$<>%^&()?]){5,}$/.test(password) == false ) {
+            layer.msg('密码必须是字母开头，不少于6位数的字母数字组合');
+            return;
+        } else if ( /^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$/.test(email) == false ) {
+            layer.msg("邮箱地址不正确");
+            return;
+        } else {
+            layer.close(index);
+            var data = {};
+            data.username = username;
+            data.password = Utils.encrypt(password);
+            if ( data.password === "" ) {
+                layer.msg("加密错误");
+                return;
+            }
+            data.email = email;
+            data.active = true;
+            data.expire = add_form['expire'].value;
+            data.firewall = add_form['firewall'].value;
+            $.ajax({
+                type: "POST",
+                url: "/add",
+                contentType: "application/json",
+                dataType: "json",
+                processData: false,
+                data: JSON.stringify(data),
+                success: function(resp, textStatus){
+                    layer.msg('添加成功');
+                    init();
+                },
+                error: function(resp, textStatus){
+                    layer.msg('添加失败: '+ data.responseText);
+                },
+            })
+        }
+    }
+
+    $("#btn_add").click(function() {
+        var dialog = $("#add_dialog").html();
+        layer.open({
+            type: 1,
+            title: "添加用户",
+            area: '500px',
+            content: dialog,
+            closeBtn: false,
+            btn: ['确定', '取消'],
+            yes: add_user,
+            btn2: function (index, layero) {
+                layer.close(index);
+            },
+            success: function(layero, index) {
+                var elem = layero.find("#expire_date")[0];
+                laydate.render({
+                    elem: elem, //指定元素
+                    format: 'yyyy-MM-dd HH:mm:ss',
+                    type: 'datetime',
+                    value: expire_time
+                });
+            }
+        });
+    });
+
+    function btn_gen_click() {
+        var data = {};
+        data.id = selected[0].id;
+        $.ajax({
+            type: "GET",
+            url: "/gen",
+            processData: true,
+            data: data,
+            success: function(resp, textStatus){
+                result = JSON.parse(resp)
+                if (result.status == 0) {
+                    layer.msg('生成成功');
+                    url = result.data.url;
+                    window.location.replace(url);
+                    init();
+                } else {
+                    layer.msg('生成失败');
+                }
+            },
+            error: function(resp, textStatus){
+                layer.msg('生成失败');
+            },
+        })
+    };
+
+    function modify_passwd(index, layero) {
+        var passwd_form = layero.find(".passwd_form")[0];
+        var passwd = passwd_form['password'].value;
+        var repasswd = passwd_form['repassword'].value
+        if (passwd == "" || passwd == "undefined") {
+            layer.msg('请输入密码');
+            return;
+        } else if (/^[a-zA-Z]{1}([a-zA-Z0-9]|[._!@#$<>%^&()?]){5,}$/.test(passwd) == false) {
+            layer.msg('密码必须是字母开头，不少于6位数的字母数字组合');
+            return;
+        } else if (passwd !== repasswd) {
+            layer.msg('密码输入不一样');
+            return;
+        } else if (passwd === repasswd) {
+            var data = {};
+            data.id = selected[0].id;
+            data.password = Utils.encrypt(passwd);
+            data.sendmail = passwd_form['sendmail'].checked;
+            $.ajax({
+                type: "POST",
+                url: "/op",
+                contentType: "application/json",
+                dataType: "json",
+                processData: false,
+                data: JSON.stringify(data),
+                success: function(resp, textStatus){
+                    init();
+                    layer.msg('修改成功');
+                },
+                error: function(resp, textStatus){
+                    layer.msg(resp.responseText);
+                },
+            })
+            passwd_form['password'].value = "";
+            passwd_form['repassword'].value = "";
+            layer.close(index);
+        }
+    }    
+
+    function btn_passwd_click() {
+        var dialog = $("#passwd_dialog").html();
+        layer.open({
+            type: 1,
+            title: "修改密码",
+            area: '500px',
+            content: dialog,
+            closeBtn: false,
+            btn: ['确定', '取消'],
+            yes: modify_passwd,
+            btn2: function (index, layero) {                
+                var passwd_form = layero.find(".passwd_form")[0];
+                passwd_form['password'].value = "";
+                passwd_form['repassword'].value = "";
+                layer.close(index);
+            },
+            success: function(layero, index) {
+                form.render();
+            }
+        });
+    };
+	
+	function modify_email(index, layero) {
+        var email_form = layero.find(".email_form")[0];
+        var email = email_form['email'].value;
+        if ( /^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$/.test(email) == false ) {
+            layer.msg("邮箱地址不正确");
+            return;
+        }
+		layer.close(index);
+        var data = {};
+        data.id = selected[0].id;
+        data.email = email;
+        $.ajax({
+            type: "POST",
+            url: "/op",
+            contentType: "application/json",
+            dataType: "json",
+            processData: false,
+            data: JSON.stringify(data),
+            success: function(resp, textStatus){
+                init();
+                layer.msg('修改成功');
+            },
+            error: function(resp, textStatus){
+                layer.msg('修改失败');
+            },
+        })		
+    }
+
+    function btn_email_click() {
+        var dialog = $("#email_dialog").html();
+        layer.open({
+            type: 1,
+            title: "修改邮箱",
+            area: '500px',
+            content: dialog,
+            closeBtn: false,
+            btn: ['确定', '取消'],
+            yes: modify_email,
+            btn2: function (index, layero) {
+                layer.close(index);
+            },
+            success: function(layero, index) {
+                var elem = layero.find("#email_input")[0];
+                $(elem).val(selected[0].email);
+            }
+        });
+    };    
+
+    function modify_expire(index, layero) {
+        layer.close(index);
+        var expire_form = layero.find(".expire_form")[0];
+        var data = {};
+        data.id = selected[0].id;
+        data.expire = expire_form['expire'].value;
+        $.ajax({
+            type: "POST",
+            url: "/op",
+            contentType: "application/json",
+            dataType: "json",
+            processData: false,
+            data: JSON.stringify(data),
+            success: function(resp, textStatus){
+                init();
+                layer.msg('修改成功');
+            },
+            error: function(resp, textStatus){
+                layer.msg('修改失败');
+            },
+        })
+    }
+
+    function btn_expire_click() {
+        var dialog = $("#expire_dialog").html();
+        layer.open({
+            type: 1,
+            title: "修改过期日期",
+            area: '500px',
+            content: dialog,
+            closeBtn: false,
+            btn: ['确定', '取消'],
+            yes: modify_expire,
+            btn2: function (index, layero) {
+                layer.close(index);
+            },
+            success: function(layero, index) {
+                var elem = layero.find("#expire_input")[0];
+                laydate.render({
+                    elem: elem, //指定元素
+                    format: 'yyyy-MM-dd HH:mm:ss',
+                    type: 'datetime',
+                    value: selected[0].expire
+                });
+            }
+        });
+    };
+
+    function modify_firewall(index, layero) { 
+        layer.close(index);	
+        var firewall_form = layero.find(".firewall-form")[0];
+        var data = {};        
+        data.id = selected[0].id;
+        data.firewall = firewall_form['firewall'].value.replace(/\n/g, '');
+        $.ajax({
+            type: "POST",
+            url: "/op",
+            contentType: "application/json",
+            dataType: "json",
+            processData: false,
+            data: JSON.stringify(data),
+            success: function(resp, textStatus){
+                init();
+                layer.msg('修改成功');
+            },
+            error: function(resp, textStatus){
+                layer.msg('修改失败');
+            },
+        })        
+    }
+
+    function btn_firewall_click() {
+        var dialog = $("#firewall_dialog").html();
+        layer.open({
+            type: 1,
+            title: "修改防火墙",
+            area: '500px',
+            content: dialog,
+            closeBtn: false,
+            btn: ['确定', '取消'],
+            yes: modify_firewall,
+            btn2: function (index, layero) {
+                layer.close(index);
+            },
+            success: function(layero, index) {
+                var firewall_form = layero.find(".firewall-form")[0];
+                if ( selected[0].firewall ) {
+                    firewall_form['firewall'].value = selected[0].firewall.replace(/,/g, ',\n');
+                }                
+            }
+        });
+    };
+	
+	function btn_active_click() {
+        var data = {};
+        data.id = selected[0].id;
+        data.active = !selected[0].active;
+        $.ajax({
+            type: "POST",
+            url: "/op",
+            contentType: "application/json",
+            processData: false,
+            dataType: "json",
+            data: JSON.stringify(data),
+            success: function(resp, textStatus){
+                init();
+                layer.msg('修改成功');
+            },
+            error: function(resp, textStatus){
+                layer.msg('修改失败');
+            },
+        })
+    };
+
+    function btn_del_click() {
+        var data = {};
+        data.id = selected[0].id;
+        $.ajax({
+            type: "POST",
+            url: "/del",
+            contentType: "application/json",
+            processData: false,
+            dataType: "json",
+            data: JSON.stringify(data),
+            success: function(resp, textStatus){
+                init();
+                layer.msg('删除成功');
+            },
+            error: function(resp, textStatus){
+                layer.msg('删除失败');
+            },
+        })
+    };
+});
+</script>

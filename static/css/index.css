@@ -1,0 +1,100 @@
+body {
+    font-size: 14px;
+}
+
+.login-title {
+    text-align: center;
+    margin-top: 120px;
+}
+
+.login-submit {
+    margin-left: 15px;
+}
+
+.login-submit button {
+    width: 45%;
+}
+
+.content-header {
+    display: block;
+    background-color: #eee;
+    line-height: 42px;
+    padding-left: 10px;
+}
+
+.content-button {
+    padding: 2px 5px 0px 5px;
+}
+
+.content {
+    padding: 0px 5px 0px 5px;
+}
+
+.content .layui-col-md12 {
+    margin-top: -5px;
+}
+
+.info-class {
+    color: #ff0000;
+    background-color: #dddddd;
+    border-radius: 10px 10px 10px 10px;
+}
+
+.layui-inline .layui-form {
+    width: 480px;
+    margin-top: 5px;
+}
+
+.layui-table-cell {
+    height: auto;
+}
+
+.layui-table-tool {
+    padding: 5px 15px;
+    min-height: 45px;
+}
+
+.searchbar .layui-input {
+    height: 30px;
+}
+
+.searchbar button {
+    height: 30px;
+    padding: 0 15px;
+}
+
+
+.layui-logs .layui-table td,
+.layui-logs .layui-table th {
+    padding: 1px 0;
+    font-size: 12px;
+}
+
+.layui-logs .layui-table-cell {
+    padding: 0 2px;
+}
+
+.layui-form-label {
+    width: 100px;
+}
+
+.layui-input-block {
+    margin-left: 130px;
+}
+
+.var-explain {
+    height: 44px;
+}
+
+.var-explain .msg-var {
+    text-align: right;
+    padding: 5px;
+}
+
+.var-explain .msg-var-desc {
+    margin-left: 5px;
+    padding: 5px;
+}
+
+
+

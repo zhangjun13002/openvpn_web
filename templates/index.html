@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<title> OpenVPN 管理 </title>
+		<link rel="icon" href="/static/favicon.ico">
+		<link rel="stylesheet" href="/static/layui/css/layui.css">
+        <link rel="stylesheet" href="/static/minadmin/style/index.css">
+		<link rel="stylesheet" href="/static/css/index.css">
+	</head>
+	<body class="layui-layout-body">
+		<!-- 布 局 框 架 -->
+		<div class="layui-layout layui-layout-admin">
+			<!-- 顶 部 样 式 -->
+			<div class="layui-header">
+				<!-- 菜 单 顶 部 -->
+				<div class="layui-logo">
+					<!-- 图 标 -->
+					<img class="logo" src="/static/openvpn.png" />
+					<!-- 标 题 -->
+					<span class="title">OpenVPN 管理</span>
+				</div>
+				<!-- 顶 部 左 侧 功 能 -->
+				<ul class="layui-nav layui-layout-left">
+					<li class="layui-nav-item"><a href="javascript:;" id="btnCollaspe" class="layui-icon layui-icon-shrink-right"></a></li>
+					<li class="layui-nav-item"><a href="javascript:;" id="btnRefresh" class="layui-icon layui-icon-refresh"></a></li>
+				</ul>
+				<!-- 顶 部 右 侧 菜 单 -->
+				<ul class="layui-nav layui-layout-right">					
+					<li class="layui-nav-item layui-hide-xs message"></li>
+					<li class="layui-nav-item user">
+						<a class="layui-icon layui-icon-username" href="javascript:;"></a>
+						<dl class="layui-nav-child">
+							<dd><a id="chpass">修改密码</a></dd>
+							<dd><a href="javascript:void(0);" id="logout">注销登录</a></dd>
+						</dl>
+					</li>
+					<li class="layui-nav-item"><a class="layui-icon"></a></li>
+				</ul>
+			</div>
+			<!-- 侧 边 区 域 -->
+			<div class="layui-side layui-bg-black">
+				<!-- 菜 单 内 容 -->
+				<div class="layui-side-scroll">
+					<ul class="layui-nav layui-nav-tree" lay-filter="side-menu" lay-shrink="all">
+						<li class="layui-nav-item layui-nav-itemed">
+							<a href="javascript:;">
+							  <i class="layui-icon layui-icon-home"></i>
+							  <span>用户管理</span>
+							</a>
+							<dl class="layui-nav-child">
+							  <dd>
+								<a lay-href="/static/views/index.html" id="homePage">用户</a>
+							  </dd>
+							  <dd>
+								<a lay-href="/static/views/userlog.html">日志</a>
+							  </dd>
+							</dl>
+						</li>
+						<li class="layui-nav-item">
+							<a href="javascript:;">
+							  <i class="layui-icon layui-icon-set-sm"></i>
+							  <span>系统设置</span>
+							</a>
+							<dl class="layui-nav-child">
+							  <dd>
+								<a lay-href="/static/views/email.html">邮箱设置</a>
+							  </dd>
+							</dl>
+							<dl class="layui-nav-child">
+								<dd>
+								  <a lay-href="/static/views/warn.html">提醒设置</a>
+								</dd>
+							</dl>
+						</li>
+					</ul>
+				</div>
+			</div>			
+			<!-- 视 图 页 面 -->
+			<div id="container" class="layui-body">
+				<!-- 内 容 页 面 -->
+			</div>							
+		</div>
+		<div id="admin_dialog" class="layui-hide">
+			<form class="layui-form passwd_form">
+				<div class="layui-form-item">
+					<label class="layui-form-label">密码</label>
+					<div class="layui-input-block">
+						<input type="password" name="password" placeholder="请输入" class="layui-input">
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">确认密码</label>
+					<div class="layui-input-block">
+						<input type="password" name="repassword" placeholder="请输入" class="layui-input">
+					</div>
+				</div>
+			</form>
+		</div>
+		<script src="/static/layui/layui.js"></script>
+		<script src="/static/minadmin/index.js"></script>
+		<script type="text/javascript" src="/static/js/crypto-js.js"></script>
+		<script type="text/javascript" src="/static/js/jsencrypt.min.js"></script>
+        <script type="text/javascript" src="/static/js/cookie.js"></script>
+		<script type="text/javascript" src="/static/js/jquery.min.js"></script>
+		<script type="text/javascript" src="/static/js/index.js"></script>
+		<script>
+			layui.use(['jquery',"admin"], function() {
+				var $ = layui.$;
+				var admin = layui.admin;
+				admin.render();
+
+				$.ajaxPrefilter(function(options, originalOptions, jqXHR) {
+					jqXHR.fail(function(xhr, status, data) {
+						if (xhr.status == 401) {
+							location.replace("/login");
+						}
+					})
+				});
+
+				function admin_pass(index, layero) {
+					var passwd_form = layero.find(".passwd_form")[0];
+					var passwd = passwd_form['password'].value;
+					var repasswd = passwd_form['repassword'].value
+					if (passwd == "" || passwd == "undefined") {
+						layer.msg('请输入密码');
+						return;
+					} else if (!/^[\S]{6,12}$/.test(passwd)) {
+						layer.msg('密码必须是6-12字母数字组合');
+						return;
+					} else if (passwd !== repasswd) {
+						layer.msg('密码输入不一样');
+						return;
+					} else if (passwd === repasswd) {
+						var data = {};
+						data.password = CryptoJS.MD5(passwd).toString(CryptoJS.enc.Hex);
+						$.ajax({
+							type: "POST",
+							url: "/admin",
+							contentType: "application/json",
+							dataType: "json",
+							processData: false,
+							data: JSON.stringify(data),
+							success: function(resp, textStatus){
+								layer.msg('修改成功');
+							},
+							error: function(resp, textStatus){
+								layer.msg('修改失败');
+							},
+						})
+						passwd_form['password'].value = "";
+						passwd_form['repassword'].value = "";
+						layer.close(index);
+					}
+				};    
+
+				$("#chpass").click(function() {
+					var dialog = $("#admin_dialog");
+					layer.open({
+						type: 1,
+						title: "修改密码",
+						area: '500px',
+						content: dialog.html(),
+						closeBtn: false,
+						btn: ['确定', '取消'],
+						yes: admin_pass,
+						btn2: function (index, layero) {
+							var passwd_form = layero.find(".passwd_form")[0];
+							passwd_form['password'].value = "";
+							passwd_form['repassword'].value = "";
+							layer.close(index);							
+						},
+					});
+				})
+
+				$("#logout").click(function() {
+					Cookies.remove("username");
+					location.replace("/login");
+				})
+			});
+		</script>
+	</body>
+</html>

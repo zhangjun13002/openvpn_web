@@ -1,0 +1,79 @@
+<div class="layui-card minadmin-page-header">
+    <div class="layui-breadcrumb minadmin-page-title">
+        <a class="minadmin-back-home">首页</a><span lay-separator="">/</span>
+        <a><cite>日志</cite></a>
+    </div>
+</div>
+
+<div class="minadmin-page-content">
+    <div class="minadmin-container">
+        <div class="minadmin-main">
+            <div class="layui-row content-button">
+                <div class="layui-col-md3">
+                    <div class='layui-row layui-col-space5 searchbar'>
+                        <div class='layui-col-md9'>
+                            <input id='searchLogText' type='text' placeholder='搜索用户' class='layui-input'>
+                        </div>
+                        <div class='layui-col-md2'>
+                            <button id='searchLogbtn' class='layui-btn layui-btn-sm layui-btn-radius'>搜索</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-row content">
+                <div class="layui-col-md12 layui-logs">
+                    <table id="logs" lay-filter="logs"></table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<script>
+layui.use(['jquery', 'table', 'layer'], function() {
+    var $ = layui.$;
+    var table = layui.table;
+    var layer = layui.layer;
+
+    var logtable = {
+        elem: '#logs',
+        url: '/logs', //数据接口
+        where: {"user": "all"},
+        page: true, //开启分页
+        cols: [[ //表头
+          {field: 'id', hide: true},
+          {field: 'username', title: '用户'},
+          {field: 'trusted_ip', title: '远程地址', width: 100},
+          {field: 'trusted_port', title: '远程端口', width: 60},
+          {field: 'local', title: '本端地址', width: 100},
+          {field: 'remote', title: '远端地址', width: 100},
+          {field: 'logintime', title: '登陆时间', width: 150},
+          {field: 'logouttime', title: '退出时间', width: 150},
+          {field: 'received', title: '接收字节'},
+          {field: 'sent', title: '发送字节'},
+        ]],
+        parseData: function(res) { //res 即为原始返回的数据
+            return {
+                "code": res.status, //解析接口状态
+                "msg": res.message, //解析提示文本
+                "count": res.total, //解析数据长度
+                "data": res.data.item //解析数据列表
+            }
+        }
+    };
+
+    table.render(logtable);
+
+    $("#searchLogbtn").click(function(){
+        var curuser = $("#searchLogText").val();
+        if (curuser === "" || curuser === "undefined") {
+            layer.msg("请输入用户");
+        } else {
+            logtable.where = {"user": curuser};
+            table.render(logtable);
+            logtable.where = {"user": "all"};
+            $("#searchLogText").val("");
+        }
+    });
+})
+</script>

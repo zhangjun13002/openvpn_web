@@ -1,0 +1,216 @@
+<div class="layui-card minadmin-page-header">
+    <div class="layui-breadcrumb minadmin-page-title">
+        <a class="minadmin-back-home">系统设置</a><span lay-separator="">/</span>
+        <a><cite>提醒设置</cite></a>
+    </div>
+</div>
+
+<div class="minadmin-page-content">
+    <div class="minadmin-container">
+        <div class="minadmin-main">
+            <div class="layui-row layui-col-space5 ">
+                <div class="layui-col-md6">                   
+
+                    <div class="layui-form" lay-filter="warn-form">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">开启提醒</label>
+                            <div class="layui-input-block">
+                                <input id="warn-enable" type="checkbox" name="status" lay-filter="warnswitch" lay-skin="switch">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">提醒时间</label>
+                            <div class="layui-input-block">
+                                <select id="warn-time" name="send_time" lay-filter="time-select">
+                                    <option value="1">前 1 天</option>
+                                    <option value="3">前 3 天</option>
+                                    <option value="7">前 7 天</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label required">发送消息</label>
+                            <div class="layui-input-block">
+                                <textarea id="warn-msg" name="send_msg" placeholder="请输入内容" class="layui-textarea"></textarea>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">向管理员发送</label>
+                            <div class="layui-input-block">
+                                <input id="admin-enable" type="checkbox" name="admin_status" lay-filter="adminswitch" lay-skin="switch">
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">管理员邮箱</label>
+                            <div class="layui-input-block">
+                                <input id="admin-email" type="text" name="admin_email" class="layui-input">
+                            </div>
+                        </div>
+                        <!--
+                        <div class="layui-form-item">
+                            <label class="layui-form-label required">发送管理员消息</label>
+                            <div class="layui-input-block">
+                                <textarea id="admin-msg" name="admin_msg" placeholder="请输入内容" class="layui-textarea"></textarea>
+                            </div>
+                        </div>
+                        -->
+                        <div class="layui-form-item">
+                            <div class="layui-input-block">
+                                <button class="layui-btn layui-btn-normal" lay-submit="" lay-filter="save">保存</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-col-md6">
+                    <div class="layui-row">
+                        <div class="layui-col-md12">
+                            <fieldset class="layui-elem-field layui-field-title site-title">
+                                <legend><a>变量说明</a></legend>
+                            </fieldset>
+                        </div>
+                    </div>
+                    <div class="layui-row var-explain">
+                        <div class="layui-col-md3">
+                            <div class="msg-var">{username}</div>
+                        </div>
+                        <div class="layui-col-md9">
+                            <div class="msg-var-desc">用户</div>
+                        </div>
+                    </div>
+                    <div class="layui-row var-explain">
+                        <div class="layui-col-md3">
+                            <div class="msg-var">{time}</div>
+                        </div>
+                        <div class="layui-col-md9">
+                            <div class="msg-var-desc">到期时间</div>
+                        </div>
+                    </div>                    
+                </div>
+            </div>          
+
+        </div>
+    </div>
+</div>
+<script>
+    layui.use(["jquery", "form"], function() {
+        var $ = layui.jquery;
+        var form = layui.form;
+
+        $.ajax({
+            type: "GET",
+            url: "/warn",
+            contentType: "application/json",
+            success: function(resp, textStatus){
+                result = JSON.parse(resp);
+                form.val("warn-form", {
+                    status: result.status,
+                    send_time: result.send_time,
+                    send_msg: result.send_msg,
+                    admin_status: result.admin_status,
+                    admin_email: result.admin_email
+                });
+                if ( result.status ) {
+                    form_enable();
+                } else {
+                    form_disable();
+                }
+                form.render();
+            },
+            error: function(resp, textStatus){
+                layer.msg('获取失败');
+            },
+        });
+
+        form.render();
+
+        function form_enable() {
+            $("#warn-time").removeClass("layui-disabled");
+            $("#warn-time").removeAttr("disabled");
+            $("#warn-msg").removeClass("layui-disabled");
+            $("#warn-msg").removeAttr("disabled");
+            $("#admin-enable").removeClass("layui-form-selected");
+            $("#admin-enable").removeAttr("disabled");
+            if ( $("#admin-enable")[0].checked ) {
+                $("#admin-email").removeClass("layui-disabled");
+                $("#admin-email").removeAttr("disabled");
+                //$("#admin-msg").removeClass("layui-disabled");
+                //$("#admin-msg").removeAttr("disabled");
+            }            
+            form.render("select");
+        };
+
+        function form_disable() {
+            $("#warn-time").addClass("layui-disabled");
+            $("#warn-time").attr("disabled", "disabled");
+            $("#warn-msg").addClass("layui-disabled");
+            $("#warn-msg").attr("disabled", "");
+            $("#admin-enable").addClass("layui-form-selected");
+            $("#admin-enable").attr("disabled", "");
+            $("#admin-email").addClass("layui-disabled");
+            $("#admin-email").attr("disabled", "");
+            //$("#admin-msg").addClass("layui-disabled");
+            //$("#admin-msg").attr("disabled", "");
+            form.render("select");
+        };
+
+        form.on("switch(warnswitch)", function(data){
+            if ( data.elem.checked ) {
+                form_enable();
+            } else {
+                form_disable();
+            }
+        });
+
+        function admin_form_enable() {
+            $("#admin-email").removeClass("layui-disabled");
+            $("#admin-email").removeAttr("disabled");
+            //$("#admin-msg").removeClass("layui-disabled");
+            //$("#admin-msg").removeAttr("disabled");
+        };
+
+        function admin_form_disable() {
+            $("#admin-email").addClass("layui-disabled");
+            $("#admin-email").attr("disabled", "");
+            //$("#admin-msg").addClass("layui-disabled");
+            //$("#admin-msg").attr("disabled", "");
+        };
+
+        form.on("switch(adminswitch)", function(data){
+            if ( data.elem.checked ) {
+                admin_form_enable();
+            } else {
+                admin_form_disable();
+            }
+        });
+
+        form.on('submit(save)', function(value){
+            var data = form.val('warn-form');
+            if ( $("#warn-enable")[0].checked ) {
+                data.status = 1;
+            } else {
+                data.status = 0;
+            }
+            if ( $('#admin-enable')[0].checked ) {
+                data.admin_status = 1;
+            } else {
+                data.admin_status = 0;
+            }             
+            $.ajax({
+                type: "POST",
+                url: "/warn",
+                contentType: "application/json",
+                processData: false,
+                dataType: "json",
+                data: JSON.stringify(data),
+                success: function(resp, textStatus){
+                    layer.msg('保存成功');
+                },
+                error: function(resp, textStatus){
+                    layer.msg('保存失败');
+                },
+            })
+            return ;
+        })
+    })
+</script>

@@ -1,0 +1,82 @@
+.minadmin-notice {	
+	box-shadow: 0 6px 16px -8px rgb(0 0 0 / 8%), 0 9px 28px 0 rgb(0 0 0 / 5%), 0 12px 48px 16px rgb(0 0 0 / 3%)!important;
+}
+
+.minadmin-notice .layui-layer-title {
+	padding-right: 15px;
+	background-color: #fafafa;
+	border-right: 1px solid whitesmoke;
+}
+
+.minadmin-notice .minadmin-notice-header {
+	display: inline;
+	font-size: 16px;
+	margin-left: 5px;
+}
+
+.minadmin-notice .minadmin-notice-count {
+	display: inline;
+	float: right;
+	margin-right: 20px;
+}
+
+.minadmin-notice * {
+	color: dimgray !important;
+}
+
+.minadmin-notice {
+	width: 360px !important;
+}
+
+.minadmin-notice-item {
+	height: 45px !important;
+	line-height: 45px !important;
+	padding: 5px 20px 5px 20px;
+	border-bottom: 1px solid whitesmoke;
+}
+
+.minadmin-notice-icon {
+	float: left;
+	margin-right: 5px;
+}
+
+.minadmin-notice-icon img {
+	width: 33px !important;
+	height: 33px !important;
+	border-radius: 45px;	
+}
+
+.minadmin-notice-title {
+	display:inline-block;
+	max-width: 170px;
+	overflow-x: hidden;
+}
+
+.minadmin-notice-end {
+	float: right;
+	right: 5px;
+}
+
+/** 滚动条样式 */
+.minadmin-notice *::-webkit-scrollbar {
+	width: 0px;
+	height: 0px;
+}
+
+.minadmin-notice *::-webkit-scrollbar-track {
+	background: white;
+	border-radius: 2px;
+}
+
+.minadmin-notice *::-webkit-scrollbar-thumb {
+	background: #E6E6E6;
+	border-radius: 2px;
+}
+
+.minadmin-notice *::-webkit-scrollbar-thumb:hover {
+	background: #E6E6E6;
+}
+
+.minadmin-notice *::-webkit-scrollbar-corner {
+	background: #f6f6f6;
+}

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>OpenVPN 管理后台登陆</title>
+	<link rel="icon" href="data:image/ico;base64,=">
+	<link rel="stylesheet" href="/static/layui/css/layui.css" />
+	<link rel="stylesheet" href="/static/minadmin/style/login.css" />
+	<link rel="stylesheet" href="/static/css/index.css" />
+</head>
+<!-- 代 码 结 构 -->
+<body style="background-size: cover;">
+	<form class="layui-form login" action="javascript:void(0);">
+		<div class="layui-form-item">
+			<img class="logo" src="/static/openvpn.png" />
+			<div class="title">OpenVPN 管理后台</div>
+		</div>
+		<div class="layui-form-item">
+			<input type="text" name="username" placeholder="账 户" lay-verify="required" hover class="layui-input"  />
+		</div>
+		<div class="layui-form-item">
+			<input type="password" name="password" placeholder="密 码" lay-verify="required" hover class="layui-input"  />
+		</div>
+		<div class="layui-form-item">
+			<div class="login-submit">
+				<button type="reset" class="layui-btn layui-btn-primary">重置</button>
+				<button class="layui-btn" lay-submit lay-filter="*">登陆</button>
+			</div>
+		</div>
+	</form>	
+</body>
+<!-- 资 源 引 入 -->
+<script src="/static/layui/layui.js"></script>
+<script type="text/javascript" src="/static/js/crypto-js.js"></script>
+<script type="text/javascript" src="/static/js/cookie.js"></script>
+<script>
+	var host = window.location.host;
+
+	layui.use(['jquery', 'form'], function() {
+		var $ = layui.$;
+		var form = layui.form;
+
+		form.on('submit(*)', function(formdata) {
+			data = {}
+			data.username = formdata.field.username;
+			data.password = CryptoJS.MD5(formdata.field.password).toString(CryptoJS.enc.Hex)
+			$.ajax({
+				type: "POST",
+				url: "/login",
+				async: false,
+				contentType: "application/json",
+				dataType: "json",
+				processData: true,
+				data: JSON.stringify(data),
+				success: function(resp, textStatus, jsxhr){
+					if (resp.code === 0) {
+						layer.msg(resp.result, {time: 1000, icon: 1});
+						Cookies.set("username", data.username, {expires: 1});
+						Cookies.set("token", resp.token.trim());
+						location.replace("/");
+					} else {
+						layer.msg(resp.result, {time: 1000, icon: 5});
+					}
+				},
+				error: function(resp, textStatus){
+					layer.msg(resp.responseText, {time: 1000, icon: 5});
+				},
+			})
+			return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+		});
+	});
+</script>
+</html>

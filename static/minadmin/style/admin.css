@@ -1,0 +1,120 @@
+@keyframes sideMin {
+    from { width: 200px; }
+    to { width: 60px;}
+}
+
+@keyframes sideMax {
+    from { width: 60px; }
+    to { width: 200px;}
+}
+
+.logo {
+	width: 45px !important;
+	margin-top: 10px !important;
+	margin-bottom: 10px !important;
+	margin-left: 5px !important;
+}
+
+.layui-side.nav-collaspe {
+    width: 60px; 
+    animation-name: sideMin;
+    animation-duration: 0.3s;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+}
+
+.layui-side.nav-collaspe-show {
+    animation-name: sideMax;
+    animation-duration: 0.3s;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+}
+
+.layui-side.nav-collaspe span {
+    display: none;
+}
+
+.layui-side.nav-collaspe .layui-icon.layui-icon-down {
+    display: none;
+}
+
+.layui-side.nav-collaspe .layui-nav-child {
+    display: none;
+}
+
+.layui-body.nav-collaspe {
+    left: 60px;
+    animation-name: sideMin;
+    animation-duration: 0.3s;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+}
+
+.layui-body.nav-collaspe-show {
+    animation-name: sideMax;
+    animation-duration: 0.3s;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+}
+
+.layui-footer.nav-collaspe {
+    left: 60px;
+    animation-name: sideMin;
+    animation-duration: 0.3s;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+}
+
+.layui-footer.nav-collaspe-show {
+    animation-name: sideMax;
+    animation-duration: 0.3s;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+}
+
+.layui-nav-child dd {
+    padding-left: 15px;
+}
+
+.minadmin-page-header {
+    overflow: hidden;
+    display: block;
+    height: 35px;
+    line-height: 35px;
+    margin-bottom: 0;
+    border-radius: 0;
+    border-bottom: 1px solid #e1dddd;
+}
+
+.minadmin-page-header .layui-breadcrumb {
+    border-top: 1px solid #f6f6f6;
+    padding: 0 15px;
+    visibility: visible;
+}
+
+.minadmin-page-content {
+    background-color:#f2f2f2!important;
+    width: 100%;
+    height: 100%;
+}
+
+.minadmin-container {
+    width: 100%;
+    height: 100%;
+    overflow: auto;    
+    border:1px solid #f2f2f2;
+    border-radius:3px;
+    background-color:#f2f2f2;
+    padding-right: 5px;
+}
+
+.minadmin-main {
+    margin:5px 5px 5px 5px;
+    border:5px solid #ffffff;
+    border-radius:5px;
+    background-color:#ffffff
+}
+
+.layui-form {
+    padding: 5px;
+}

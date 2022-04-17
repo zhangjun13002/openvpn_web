@@ -1,0 +1,115 @@
+<div class="layui-card minadmin-page-header">
+    <div class="layui-breadcrumb minadmin-page-title">
+        <a class="minadmin-back-home">系统设置</a><span lay-separator="">/</span>
+        <a><cite>邮箱设置</cite></a>
+    </div>
+</div>
+<div class="minadmin-page-content">
+    <div class="minadmin-container">
+        <div class="minadmin-main">
+    
+            <div class="layui-form" lay-filter="email-form">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">SMTP服务器</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="server" lay-verify="required" lay-reqtext="SMTP服务器不能为空" placeholder="请输入SMTP服务器地址" value="" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">安全类型</label>
+                    <div class="layui-input-block">
+                        <select name="ssl" lay-filter="ssl">
+                            <option value="0">无</option>
+                            <option value="1">SSL/TLS</option>
+                        </select>                        
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label required">端口</label>
+                    <div class="layui-input-block">
+                        <input id="port" type="text" name="port" lay-verify="number" placeholder="请输入端口" value="25" class="layui-input">
+                    </div>
+                </div> 
+                <div class="layui-form-item">
+                    <label class="layui-form-label">发送用户邮箱</label>
+                    <div class="layui-input-inline" style="width: 250px;">
+                        <input type="text" name="user" lay-verify="required" value="" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">发送用户密码</label>
+                    <div class="layui-input-block" style="width: 250px;">
+                        <input type="password" name="password" value="" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-input-block">
+                        <button class="layui-btn layui-btn-normal" lay-submit="" lay-filter="save">保存</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<script>
+    layui.use(["jquery", "form"], function() {
+        var $ = layui.jquery;
+        var form = layui.form;
+
+        $.ajax({
+            type: "GET",
+            url: "/smtp",
+            contentType: "application/json",
+            success: function(resp, textStatus){
+                result = JSON.parse(resp);
+                form.val("email-form", {
+                    server: result.server,
+                    ssl: result.ssl,
+                    port: result.port,
+                    user: result.user
+                });
+                form.render();
+            },
+            error: function(resp, textStatus){
+                layer.msg('获取失败');
+            },
+        });
+
+        form.render();
+
+        form.on('select(ssl)', function(data){
+            if ( data.value == 0 ) {
+                form.val("email-form", {
+                    port: "25"
+                })
+            } else {
+                form.val("email-form", {
+                    port: "465"
+                })
+            }
+        });
+
+        form.on('submit(save)', function(value){
+            var data = form.val('email-form');
+            if ( data.password != undefined && data.password != "" ) {
+                data.password = Utils.encrypt(data.password);
+            }            
+            $.ajax({
+                type: "POST",
+                url: "/smtp",
+                contentType: "application/json",
+                processData: false,
+                dataType: "json",
+                data: JSON.stringify(data),
+                success: function(resp, textStatus){
+                    layer.msg('保存成功');
+                },
+                error: function(resp, textStatus){
+                    layer.msg('保存失败');
+                },
+            })
+            return;
+        })
+    })
+</script>
